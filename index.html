@@ -247,6 +247,10 @@
 
         let point = 0;
         let opened = 0;
+        let rr = Cookies.get("point");
+        if (typeof (rr) == "undefined") {
+                Cookies.set("point", 0);
+            }
         
         $(".card").on("click",function () {
             let nom = $(this).text();
