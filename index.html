@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Game</title>
+    <style>
+        body{
+            padding: 0;
+            margin: 0;
+            background-image: url('/bg/bg2.jpg');
+        }
+        .container{
+            width: 90%;
+            height: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            }
+        #mainmenu{
+            width: 42%;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            background-color: white;
+            box-shadow: 1px 1px 3px #ccc;
+            cursor: pointer;
+            font-family: Arial, Helvetica, sans-serif;
+            /* display: none; */
+        }
+        #mainmenu button{
+            height: 40px;
+            margin: 5px;
+            background-color: royalblue;
+            border: 0 ;
+            box-shadow: 1px 1px 0px #ccc;
+            text-decoration: none;
+            font-size: large;
+            font-weight: bold;
+            color: white;
+        }
+        #mainmenu button:hover{
+            cursor: pointer;
+            background-color: rgb(80, 104, 177);
+        }
+
+        #panel{
+            flex-direction: column;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #board{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 330px;
+            margin: 10px;
+            padding: 10px;
+            width: 70%;
+            box-shadow: 1px 1px 3px #ccc;
+            background: rgb(255, 255, 255);
+            flex-direction: column;
+        }
+        #card-deck{
+            width: 100%;
+            background: rgb(249, 253, 184);
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .card{
+            width: 100px;
+            height: 150px;
+            background: royalblue;
+            margin: 8px;
+            border-radius: 5%;
+            box-shadow: 1px 1px 1px #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            perspective: 1000px;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            
+        }
+        .cnum{
+            font-size: 4rem;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #ffffff;
+        }
+        
+        .back {
+            transform: rotateY(180deg);
+        }
+        .back .cnum{
+             backface-visibility: hidden;
+        }
+        .front{
+            transform: rotateY(0deg);
+            
+        }
+        .front .cnum{
+             backface-visibility: visible;
+        }
+        .notf{
+            width: 400px;
+            height: 200px;
+            box-shadow: 1px 1px 1px #ccc;
+            background-color: #ffffff;
+            font-size: 2.1rem;
+            font-family: sans-serif;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            border-radius: 9px;
+            position: absolute;
+            cursor: pointer;
+            margin-top: 100px;
+        }
+        mark{
+            background-color: cadetblue;
+        }
+        .btm{
+            font-family: Arial, Helvetica, sans-serif;
+            color: #ffffff;
+            position: absolute;
+            top: 33rem;
+            left: 3rem;
+        }
+     
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="mainmenu">
+            <button onclick="start();">START</button>
+            <button onclick="option();">OPTION</button>
+            <button onclick="quit();">QUIT</button>
+        </div>
+        <div id="panel">
+            <mark><H1 style="color: white; font-family: Arial, Helvetica, sans-serif; text-align: center;">KUMPULKAN POINT
+                SEBANYAK-BANYAKNYA, DAN HIDARI JEBAKAN DIDALAMNYA.</H1>
+</mark>    
+            <div id="board">
+                <div id="card-deck">
+                </div>
+            </div>
+        </div>
+        <div class="btm">
+            <h1 id="score"></h1>
+            <h1 id="highscore">High Score :</h1>
+        </div>
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+    <script>
+        // main menu
+        if (Cookies.get('ulang')) {
+            $("#panel").show();
+            $("#mainmenu").hide();
+        }else{
+            $("#panel").hide();
+        }
+        
+
+        
+        function start() {
+            $("#panel").show();
+            $("#mainmenu").hide();
+        }
+        function option() {
+            let tny = prompt("masukan url background : ");
+            if (tny != "") {
+                $(document.body).css("background-image", "url(" + tny + ")");
+            }else{
+                $(document.body).css("background-image", "url('/bg2.jpg')");
+            }
+        }
+        function quit() {
+            location.reload();
+        }
+
+
+        function shuffle(array) {
+                        var copy = [], n = array.length, i;
+
+                        // While there remain elements to shuffle…
+                        while (n) {
+
+                            // Pick a remaining element…
+                            i = Math.floor(Math.random() * array.length);
+
+                            // If not already shuffled, move it to the new array.
+                            if (i in array) {
+                                copy.push(array[i]);
+                                delete array[i];
+                                n--;
+                            }
+                        }
+
+                        return copy;
+                    }
+
+        let arrcard = [1,2,3,4,5,6,7,8,9,10,11];
+       let trap = ["💣"];
+       arrcard.push(trap);
+
+        let shuf = shuffle(arrcard);
+        for (let i = 0; i < shuf.length; i++) {
+            let dv = document.createElement("div");
+            dv.classList = "card back";
+            let sp = document.createElement("span");
+            sp.classList = "cnum";
+            sp.innerHTML = shuf[i];
+            $(dv).append(sp);
+            $("#card-deck").append(dv);   
+        }
+
+
+        function again(pesan) {
+            let ntf = document.createElement("div");
+            $(ntf).text(pesan);
+            $(ntf).addClass("notf");
+            $("#panel").append(ntf);
+            $(".card").fadeOut(400);
+            setTimeout(() => {
+                let ty = confirm("Main Lagi?");
+                if (ty) {
+                    Cookies.set('ulang', 'true');
+                    document.location.reload();
+                } else {
+                    Cookies.remove('ulang');
+                    document.location.reload();
+                }
+            }, 1200);
+        }
+
+        let point = 0;
+        let opened = 0;
+        
+        $(".card").on("click",function () {
+            let nom = $(this).text();
+            $(this).removeClass("back");
+            $(this).addClass("front");
+            setTimeout(() => {           
+                
+                if (nom != trap) {
+                    point += 10;
+                    opened += 1;
+                    if (opened == (shuf.length - trap.length - 1)) {
+                        again("SELAMAT KAMU BERHASIL !");
+                    }
+                     $('#score').text("Score : " + point);
+                }else{
+                    again("Maaf.. Kamu GAGAL ! Point Kamu : " + point + " Pts");
+                    if (point > Cookies.get("point")) Cookies.set("point", point);
+                }    
+           }, 1000);
+                    
+        })
+
+        
+        $('#highscore').text("Highscore : " + Cookies.get("point"));
+        
+        // Cookies.remove("point");
+        
+    </script>
+</body>
+</html>      
